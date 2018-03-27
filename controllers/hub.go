@@ -79,11 +79,13 @@ func Deploy(c *gin.Context) {
 	path = "/opt/compose/" + path
 	fmt.Println(path)
 
-	cmd := exec.Command("cd", path)
-	fmt.Println("cd " + path)
-	cmd.Run()
+	//cmd := exec.Command("cd", path)
+	//fmt.Println("cd " + path)
+	//cmd.Run()
 
-	cmd = exec.Command("docker-compose", "pull")
+	exec.Cmd.Dir = path
+
+	cmd := exec.Command("docker-compose", "pull")
 	fmt.Println("docker-compose pull")
 	var out bytes.Buffer
 	cmd.Stdout = &out
