@@ -80,15 +80,14 @@ func Deploy(c *gin.Context) {
 	//var out bytes.Buffer
 
 	cmd := exec.Command("docker-compose", "pull")
-	cmd.Dir = "/opt/compose/" + path
-	fmt.Println("cd /opt/compose/" + path)
+	cmd.Dir = path
 	fmt.Println("docker-compose pull")
 
 	//cmd.Stdout = &out
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println("docker pull error:", err.Error())
-		c.JSON(http.StatusOK, gin.H{"status": "success"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "msg": err.Error()})
 		return
 	}
 	fmt.Println(string(out))
@@ -106,7 +105,7 @@ func Deploy(c *gin.Context) {
 	out, err = cmd.Output()
 	if err != nil {
 		fmt.Println("docker-compose up error:", err.Error())
-		c.JSON(http.StatusOK, gin.H{"status": "success"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "msg": err.Error()})
 		return
 	}
 	fmt.Println(string(out))
