@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"bytes"
 	"os/exec"
-	"log"
 )
 
 type Webhook struct {
@@ -38,7 +37,6 @@ type TemplateData struct {
 	//Tag      string
 	//Params   string
 }
-
 
 var repoPathMapping = map[string]string{
 	"ssoserver": "ssoserver",
@@ -91,7 +89,7 @@ func Deploy(c *gin.Context) {
 	cmd.Stdout = &out
 	err := cmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf(out.String())
 	}
 	fmt.Printf("GOGOGO: %q\n", out.String())
 
@@ -101,7 +99,7 @@ func Deploy(c *gin.Context) {
 	cmd.Stdout = &out2
 	err = cmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf(out2.String())
 	}
 	fmt.Printf("GOGOGO: %q\n", out2.String())
 
