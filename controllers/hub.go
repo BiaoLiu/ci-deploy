@@ -84,7 +84,7 @@ func Deploy(c *gin.Context) {
 	}
 
 	info := TemplateData{
-		Path: "robo2025/" + path,
+		Path: "/robo2025/" + path,
 	}
 
 	buff := new(bytes.Buffer)
@@ -100,6 +100,8 @@ func Deploy(c *gin.Context) {
 		fmt.Println(stdouterr)
 		//sendCallback(w, payload.CallbackURL, false, "script error: "+err.Error())
 		//return
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "msg": "script error: " + err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
