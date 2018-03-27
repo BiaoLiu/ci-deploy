@@ -84,7 +84,7 @@ func Deploy(c *gin.Context) {
 	}
 
 	info := TemplateData{
-		Path: "/robo2025/" + path,
+		Path: "/opt/compose/" + path,
 	}
 
 	buff := new(bytes.Buffer)
