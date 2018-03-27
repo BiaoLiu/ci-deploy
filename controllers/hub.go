@@ -76,34 +76,39 @@ func Deploy(c *gin.Context) {
 		path = webhook.Repository.Name
 	}
 
+	var out bytes.Buffer
+
 	path = "/opt/compose/" + path
 	fmt.Println(path)
 
-	//cmd := exec.Command("cd", path)
-	//fmt.Println("cd " + path)
-	//cmd.Run()
+	cmd := exec.Command("cd", path)
+	fmt.Println("cd " + path)
+	cmd.Run()
 
-	exec.Cmd.Dir = path
+	cmd= exec.Command("ls","li")
+	cmd.Stdout=&out
+	err:=cmd.Run()
+	if err!=nil{
+		fmt.Println(err.Error())
+	}
 
-	cmd := exec.Command("docker-compose", "pull")
+	cmd = exec.Command("docker-compose", "pull")
 	fmt.Println("docker-compose pull")
-	var out bytes.Buffer
 	cmd.Stdout = &out
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
-		fmt.Printf(out.String())
+		fmt.Printf(err.Error())
 	}
 	fmt.Printf("GOGOGO: %q\n", out.String())
 
 	cmd = exec.Command("docker-compose", "up", "-d")
 	fmt.Println("docker-compose up -d")
-	var out2 bytes.Buffer
-	cmd.Stdout = &out2
+	cmd.Stdout = &out
 	err = cmd.Run()
 	if err != nil {
-		fmt.Printf(out2.String())
+		fmt.Printf(err.Error())
 	}
-	fmt.Printf("GOGOGO: %q\n", out2.String())
+	fmt.Printf("GOGOGO: %q\n", out.String())
 
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
