@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"fmt"
 	"net/http"
-	"bytes"
 	"os/exec"
 )
 
@@ -76,39 +75,48 @@ func Deploy(c *gin.Context) {
 		path = webhook.Repository.Name
 	}
 
-	var out bytes.Buffer
-
 	path = "/opt/compose/" + path
-	fmt.Println(path)
 
-	cmd := exec.Command("cd", path)
-	fmt.Println("cd " + path)
-	cmd.Run()
+	//var out bytes.Buffer
 
-	cmd= exec.Command("ls","li")
-	cmd.Stdout=&out
-	err:=cmd.Run()
-	if err!=nil{
-		fmt.Println(err.Error())
-	}
-
-	cmd = exec.Command("docker-compose", "pull")
+	cmd := exec.Command("docker-compose", "pull")
+	cmd.Dir = "/opt/compose/" + path
+	fmt.Println("cd /opt/compose/" + path)
 	fmt.Println("docker-compose pull")
-	cmd.Stdout = &out
-	err = cmd.Run()
+
+	//cmd.Stdout = &out
+	out, err := cmd.Output()
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Println("docker pull error:", err.Error())
+		c.JSON(http.StatusOK, gin.H{"status": "success"})
+		return
 	}
-	fmt.Printf("GOGOGO: %q\n", out.String())
+	fmt.Println(string(out))
+
+	//err = cmd.Run()
+	//if err != nil {
+	//	fmt.Printf(err.Error())
+	//}
+	//fmt.Printf("GOGOGO: %q\n", out.String())
 
 	cmd = exec.Command("docker-compose", "up", "-d")
+	cmd.Dir = path
 	fmt.Println("docker-compose up -d")
-	cmd.Stdout = &out
-	err = cmd.Run()
+
+	out, err = cmd.Output()
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Println("docker-compose up error:", err.Error())
+		c.JSON(http.StatusOK, gin.H{"status": "success"})
+		return
 	}
-	fmt.Printf("GOGOGO: %q\n", out.String())
+	fmt.Println(string(out))
+
+	//cmd.Stdout = &out
+	//err = cmd.Run()
+	//if err != nil {
+	//	fmt.Printf(err.Error())
+	//}
+	//fmt.Printf("GOGOGO: %q\n", out.String())
 
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
