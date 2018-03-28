@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
+	"bytes"
+	"time"
+	"encoding/json"
 )
 
 type Webhook struct {
@@ -58,7 +61,6 @@ var repoPathMapping = map[string]string{
 
 func Deploy(c *gin.Context) {
 	secretKey := c.DefaultQuery("secretkey", "")
-	fmt.Println(secretKey)
 
 	if secretKey != "test" {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "secretkey错误"})
@@ -81,7 +83,7 @@ func Deploy(c *gin.Context) {
 
 	cmd := exec.Command("docker-compose", "pull")
 	cmd.Dir = path
-	fmt.Println("docker-compose pull")
+	fmt.Println("docker-compose pull ", path)
 
 	//cmd.Stdout = &out
 	out, err := cmd.Output()
@@ -117,5 +119,29 @@ func Deploy(c *gin.Context) {
 	//}
 	//fmt.Printf("GOGOGO: %q\n", out.String())
 
+	sendCallback(webhook.CallbackURL, true, "")
+
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
+}
+
+var httpClient = &http.Client{Timeout: 10 * time.Second}
+
+func sendCallback(url string, success bool, description string) {
+	body := Callback{
+		State:       "failure",
+		Context:     "Webhook deploy server",
+		Description: description,
+	}
+	if len(body.Description) > 255 {
+		body.Description = body.Description[0:255]
+	}
+	if success {
+		body.State = "success"
+	}
+	buff := new(bytes.Buffer)
+	json.NewEncoder(buff).Encode(body)
+	res, err := httpClient.Post(url, "application/json; charset=utf-8", buff)
+	if err != nil || res.StatusCode != 200 {
+		return
+	}
 }
