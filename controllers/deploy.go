@@ -80,6 +80,9 @@ func Deploy(c *gin.Context) {
 	}
 	path = "/opt/compose/" + path
 
+	fmt.Println("prepare to exec...")
+	time.Sleep(1 * time.Minute)
+
 	cmd := exec.Command("docker-compose", "pull")
 	cmd.Dir = path
 	fmt.Println("exec script: docker-compose pull ", webhook.Repository.RepoName)
