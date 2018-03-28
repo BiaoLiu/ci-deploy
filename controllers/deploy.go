@@ -59,11 +59,13 @@ var repoPathMapping = map[string]string{
 	"customerdemand-api":   "customerdemand",
 }
 
-func Deploy(c *gin.Context) {
-	secretKey := c.DefaultQuery("secretkey", "")
+const TOKEN = "eyJpYXQiOjE1MjIxNDQ4NjAsInVpZCI6MSwic2lkIjoiOTJhYjlreXFoaWxiNDBscXl3cHAyeGxoeGg4d20yd2wifQ.DZun3A.i6sX5yTSJiJjm0xRCuAj_cw6-l0"
 
-	if secretKey != "test" {
-		c.JSON(http.StatusForbidden, gin.H{"msg": "secretkey错误"})
+func Deploy(c *gin.Context) {
+	token := c.DefaultQuery("token", "")
+
+	if token != TOKEN {
+		c.JSON(http.StatusForbidden, gin.H{"msg": "token error"})
 		return
 	}
 
@@ -76,14 +78,11 @@ func Deploy(c *gin.Context) {
 	if path == "" {
 		path = webhook.Repository.Name
 	}
-
 	path = "/opt/compose/" + path
-
-	//var out bytes.Buffer
 
 	cmd := exec.Command("docker-compose", "pull")
 	cmd.Dir = path
-	fmt.Println("docker-compose pull ", path)
+	fmt.Println("exec script: docker-compose pull ", webhook.Repository.RepoName)
 
 	//cmd.Stdout = &out
 	out, err := cmd.Output()
@@ -94,15 +93,9 @@ func Deploy(c *gin.Context) {
 	}
 	fmt.Println(string(out))
 
-	//err = cmd.Run()
-	//if err != nil {
-	//	fmt.Printf(err.Error())
-	//}
-	//fmt.Printf("GOGOGO: %q\n", out.String())
-
 	cmd = exec.Command("docker-compose", "up", "-d")
 	cmd.Dir = path
-	fmt.Println("docker-compose up -d")
+	fmt.Println("exec script: docker-compose up -d")
 
 	out, err = cmd.Output()
 	if err != nil {
@@ -111,13 +104,6 @@ func Deploy(c *gin.Context) {
 		return
 	}
 	fmt.Println(string(out))
-
-	//cmd.Stdout = &out
-	//err = cmd.Run()
-	//if err != nil {
-	//	fmt.Printf(err.Error())
-	//}
-	//fmt.Printf("GOGOGO: %q\n", out.String())
 
 	sendCallback(webhook.CallbackURL, true, "")
 
