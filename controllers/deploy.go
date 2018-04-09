@@ -40,6 +40,7 @@ type TemplateData struct {
 	//Params   string
 }
 
+/**Docker hub repo名称与服务器路径对应的map**/
 var repoPathMapping = map[string]string{
 	"ssoserver": "ssoserver",
 
@@ -57,6 +58,8 @@ var repoPathMapping = map[string]string{
 	"customerdemand-front": "customerdemand",
 	"customerdemand-admin": "customerdemand",
 	"customerdemand-api":   "customerdemand",
+
+	"super-admin": "super",
 }
 
 const TOKEN = "eyJpYXQiOjE1MjIxNDQ4NjAsInVpZCI6MSwic2lkIjoiOTJhYjlreXFoaWxiNDBscXl3cHAyeGxoeGg4d20yd2wifQ.DZun3A.i6sX5yTSJiJjm0xRCuAj_cw6-l0"
