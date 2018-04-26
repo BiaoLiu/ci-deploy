@@ -44,8 +44,9 @@ type TemplateData struct {
 var repoPathMapping = map[string]string{
 	"ssoserver": "ssoserver",
 
-	"roboshop-api":   "roboshop",
-	"roboshop-front": "roboshop",
+	"roboshop-api":         "roboshop",
+	"roboshop-front":       "roboshop",
+	"personalcenter-front": "roboshop",
 
 	"robouser-api":    "robouser-api",
 	"robopay-api":     "robopay-api",
