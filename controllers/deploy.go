@@ -66,7 +66,9 @@ var repoPathMapping = map[string]string{
 const TOKEN = "eyJpYXQiOjE1MjIxNDQ4NjAsInVpZCI6MSwic2lkIjoiOTJhYjlreXFoaWxiNDBscXl3cHAyeGxoeGg4d20yd2wifQ.DZun3A.i6sX5yTSJiJjm0xRCuAj_cw6-l0"
 
 func Deploy(c *gin.Context) {
-	token := c.DefaultQuery("token", "")
+	token := c.Query("token")
+	//对应服务器docker-compose目录名
+	projectName := c.Query("repo")
 
 	if token != TOKEN {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "token error"})
@@ -78,10 +80,16 @@ func Deploy(c *gin.Context) {
 		fmt.Println("bind error")
 	}
 
-	path := repoPathMapping[webhook.Repository.Name]
-	if path == "" {
-		path = webhook.Repository.Name
+	var path string
+	if projectName != "" {
+		path = projectName
+	} else {
+		path = repoPathMapping[webhook.Repository.Name]
+		if path == "" {
+			path = webhook.Repository.Name
+		}
 	}
+
 	path = "/opt/compose/" + path
 
 	fmt.Println("prepare to exec: ", webhook.Repository.RepoName)
