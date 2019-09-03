@@ -12,7 +12,7 @@ var repoPathMapping1 = map[string]string{
 	"crm": "pss-crm",
 }
 
-const TOKEN1 = "eyJpYXQiOjE1MjIxNDQ4NjAsInVpZCI6MSwic2lkIjoiOTJhYjlreXFoaWxiNDBscXl3cHAyeGxoeGg4d20yd2wifQ"
+const TOKEN1 = "eyJpYXQiOjE1M"
 
 func Deploy(c *gin.Context) {
 	token := c.Query("token")
@@ -20,11 +20,11 @@ func Deploy(c *gin.Context) {
 	repoName := c.Query("repo")
 
 	if token != TOKEN1 {
-		c.JSON(http.StatusForbidden, gin.H{"msg": "token error"})
+		c.JSON(http.StatusForbidden, gin.H{"status": "error", "msg": "token error"})
 		return
 	}
 	if repoName == "" {
-		c.JSON(http.StatusNotFound, gin.H{"msg": "error params"})
+		c.JSON(http.StatusNotFound, gin.H{"status": "error", "msg": "repo name is required"})
 		return
 	}
 
