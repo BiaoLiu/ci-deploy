@@ -1,12 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
-import "dockerhub-deploy/controllers"
+import (
+	"ci-deploy/controllers"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
 	engine := gin.Default()
 
-	engine.POST("/deploy",controllers.Deploy)
+	engine.POST("/dockerhub-deploy", controllers.DockerhubDeploy)
+	engine.GET("/deploy", controllers.Deploy)
 
 	engine.Run(":9500")
 }
