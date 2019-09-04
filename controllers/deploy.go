@@ -20,6 +20,7 @@ func Deploy(c *gin.Context) {
 	//项目名称
 	repoName := c.Query("repo")
 
+	fmt.Println("request url:", c.Request.URL)
 	if token != TOKEN1 {
 		c.JSON(http.StatusForbidden, gin.H{"status": "error", "msg": "token error"})
 		return
@@ -52,7 +53,6 @@ func Deploy(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "msg": err.Error()})
 		return
 	}
-	fmt.Println(string(out))
 
 	cmd = exec.Command("docker-compose", "up", "-d")
 	cmd.Dir = path
