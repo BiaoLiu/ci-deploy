@@ -10,6 +10,7 @@ import (
 /**Docker hub repo名称与服务器目录对应的map**/
 var repoPathMapping1 = map[string]string{
 	"crm": "pss-crm",
+	"mjs": "pss-api",
 }
 
 const TOKEN1 = "eyJpYXQiOjE1M"
